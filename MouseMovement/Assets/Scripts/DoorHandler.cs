@@ -26,4 +26,5 @@ public class DoorHandler : MonoBehaviour
         isOpen = false;
         // Add logic to close the door (e.g., play animation, enable collider, etc.)
     }
+    //Test comment added for clarity
 }
