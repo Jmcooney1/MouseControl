@@ -1,34 +1,37 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ButtonHandler : MonoBehaviour
 {
-    bool isPressed = false;
-    GameObject[] doors;
-    
+    int pressCount = 0;
+    public GameObject[] doors;
+
+    // <-- Assign this in Inspector to the layer that IS allowed to press the button
+    public LayerMask allowedLayers;
+
     void FixedUpdate()
     {
-        if (isPressed)
+        bool opening = pressCount > 0;
+
+        foreach (GameObject door in doors)
         {
-            foreach (GameObject door in doors)
-            {
-                door.GetComponent<DoorHandler>().open = true;
-            }
-        }
-        else
-        {
-            foreach (GameObject door in doors)
-            {
-                door.GetComponent<DoorHandler>().open = false;
-            }
+            door.GetComponent<DoorHandler>().opening = opening;
         }
     }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
-        isPressed = true;
+        // Only allow activation if the object's layer matches allowedLayers
+        if (((1 << collision.gameObject.layer) & allowedLayers) != 0)
+        {
+            pressCount++;
+        }
     }
+
     void OnTriggerExit2D(Collider2D collision)
     {
-        isPressed = false;
+        if (((1 << collision.gameObject.layer) & allowedLayers) != 0)
+        {
+            pressCount = Mathf.Max(pressCount - 1, 0);
+        }
     }
 }
