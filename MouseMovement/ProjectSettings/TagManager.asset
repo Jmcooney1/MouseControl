@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - background
+  - Enemy
+  - Elvis
+  - Evil
   layers:
   - Default
   - TransparentFX
@@ -39,11 +42,17 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 1066778929
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
   - name: player
     uniqueID: 2781640697
+    locked: 0
+  - name: Enemy
+    uniqueID: 2534603949
     locked: 0
   m_RenderingLayers:
   - Default
