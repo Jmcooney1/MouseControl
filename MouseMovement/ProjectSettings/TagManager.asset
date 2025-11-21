@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - background
+  - activator
   - Enemy
   - Elvis
   - Evil
@@ -12,7 +13,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - activator
   - Water
   - UI
   - 
