@@ -1,7 +1,5 @@
 
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class patrol_enemy_movement : MonoBehaviour
 {
@@ -103,7 +101,15 @@ public class patrol_enemy_movement : MonoBehaviour
             startPosition = patrolEnemyPositions[currentIndex];
             endPosition = patrolEnemyPositions[nextIndex];
 
-            Debug.Log($"Patrol: reached index {currentIndex}. New nextIndex={nextIndex}. loop={loop} pingPong={pingPong} direction={direction}");
+            //Debug.Log($"Patrol: reached index {currentIndex}. New nextIndex={nextIndex}. loop={loop} pingPong={pingPong} direction={direction}");
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("Patrol Enemy collided with Player");
         }
     }
 }
