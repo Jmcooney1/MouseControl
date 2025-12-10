@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 public class InputHandler : MonoBehaviour
 {
     private Vector2 movement;
+    public static Vector2 InstrumentPos;
+    public static bool isInstrumentActive = false;
 
     void FixedUpdate()
     {
@@ -14,4 +16,5 @@ public class InputHandler : MonoBehaviour
     {
         movement = Camera.main.ScreenToWorldPoint(value.Get<Vector2>());
     }
+
 }

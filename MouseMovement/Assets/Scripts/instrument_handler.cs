@@ -1,10 +1,14 @@
 using UnityEngine;
+using pem = patrol_enemy_movement;
 
 public class instrument_handler : MonoBehaviour
 {
     public AudioSource instrumentSound;
     public AudioClip soundClip;
     bool isPressed = false;
+
+    public patrol_enemy_movement patrol_Enemy_Movement;
+    public static Vector2 instrumentPos;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -18,7 +22,11 @@ public class instrument_handler : MonoBehaviour
         {
             instrumentPress();
             instrumentSound.PlayOneShot(soundClip, 1.0f);
-            instrumentRelease();
+            instrumentPos = other.transform.position;
+            pem enemy = GameObject.Find("patrol_enemy").GetComponent<pem>();
+            enemy.heardInstrument = true;
+            enemy.currentIndex = -1;
+            enemy.speed = 2;
         }
     }
 
@@ -26,12 +34,6 @@ public class instrument_handler : MonoBehaviour
     {
         Debug.Log("Instrument pressed");
         isPressed = true;
-    }
-
-    void instrumentRelease()
-    {
-        Debug.Log("Instrument released");
-        isPressed = false;
     }
 
 }
