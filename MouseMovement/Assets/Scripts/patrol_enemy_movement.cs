@@ -1,24 +1,11 @@
 using UnityEngine;
-
-public class NewMonoBehaviourScript : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
+using UnityEngine.SceneManagement;
 
 public class patrol_enemy_movement : MonoBehaviour
 {
     Rigidbody2D rb;
 
+    ElvisHandler elvisHandler;
     public int speed = 5;
 
     private Vector2[] patrolEnemyPositions = new Vector2[8]
@@ -57,6 +44,9 @@ public class patrol_enemy_movement : MonoBehaviour
 
     public bool reverse = false; // when true, reverses direction at ends
     private int direction = 1; // 1 = forward, -1 = backward (used for ping-pong)
+
+    public AudioSource audioSource;
+    AudioClip alertClip;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -67,6 +57,7 @@ public class patrol_enemy_movement : MonoBehaviour
         startPosition = patrolEnemyPositions[currentIndex];
         endPosition = patrolEnemyPositions[nextIndex];
         transform.position = startPosition;
+        audioSource = GetComponent<AudioSource>();
 
     }
 
@@ -75,13 +66,13 @@ public class patrol_enemy_movement : MonoBehaviour
         Vector2 target;
         if (!heardInstrument)
         {
-            Debug.Log("Continuing normal patrol");
+            //Debug.Log("Continuing normal patrol");
             target = patrolEnemyPositions[nextIndex];
             loop = true;
         }
         else
         {
-            Debug.Log("Following instrument patrol");
+            //Debug.Log("Following instrument patrol");
             target = instrumentPatrol[nextIndex % instrumentPatrol.Length];
             loop = false;
         }
@@ -92,26 +83,26 @@ public class patrol_enemy_movement : MonoBehaviour
         Vector2 newPos = Vector2.MoveTowards(currentPosition, target, speed * Time.fixedDeltaTime);
         rb.MovePosition(newPos);
 
-        Debug.Log($"Patrol Enemy moving from {currentPosition} to {target} at speed {speed}");
+        //Debug.Log($"Patrol Enemy moving from {currentPosition} to {target} at speed {speed}");
         if (Vector2.Distance(newPos, target) < 0.05f)
         {
             if (loop)
             {
-                Debug.Log("Looping patrol");
+                //Debug.Log("Looping patrol");
                 currentIndex = nextIndex;
                 nextIndex = (nextIndex + 1) % patrolEnemyPositions.Length;
             }
 
             if (heardInstrument)
             {
-                Debug.Log("Heard instrument, moving to instrument patrol");
+                //Debug.Log("Heard instrument, moving to instrument patrol");
                 target = instrumentPatrol[nextIndex % instrumentPatrol.Length];
                 nextIndex = (nextIndex + 1) % instrumentPatrol.Length;
                 nextPosition = target;
 
                 if (target == instrumentPatrol[0])
                 {
-                    Debug.Log("Finished instrument patrol, resuming normal patrol");
+                    //Debug.Log("Finished instrument patrol, resuming normal patrol");
                     heardInstrument = false;
                     loop = true;
                 }
@@ -147,13 +138,13 @@ public class patrol_enemy_movement : MonoBehaviour
              // Guard: if nextIndex accidentally equals currentIndex, advance to avoid zero-length moves
             if (nextIndex == currentIndex)
             {
-                Debug.Log("Adjusting nextIndex to avoid zero-length move");
+                //Debug.Log("Adjusting nextIndex to avoid zero-length move");
                 nextIndex = (currentIndex + 1) % patrolEnemyPositions.Length;
             }
 
             if(nextIndex == patrolEnemyPositions.Length - 1)
             {
-                Debug.Log("Resetting patrol to start");
+                //Debug.Log("Resetting patrol to start");
                 nextIndex = 0;
             }
 
@@ -165,12 +156,19 @@ public class patrol_enemy_movement : MonoBehaviour
         //patrolMovement();
     
 
-    void OnCollisionEnter2D(Collision2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             Debug.Log("Patrol Enemy collided with Player");
+            audioSource.PlayOneShot(alertClip, 1.0f);
+            Reset();
         }
+    }
+
+    public void Reset()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 }
